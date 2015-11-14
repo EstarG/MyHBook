@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<constant name="struts.ui.theme" value="simple"></constant>
+	<constant name="struts.multipart.maxSize" value="10000000" />
+	
+	<!-- 全局包 -->
+	<package name="base" extends="json-default">
+		<!-- 拦截器定义 -->
+		<interceptors>
+	    	<interceptor name="loginInterceptor" class="loginInterceptor">
+	    		<param name="includeMethods">
+	    			query, queryUsers,addUser,deleteUser,addAuthor,deleteAuthor,
+	    			addBook,adminSearchBook
+	    		
+	    		</param>
+	    	</interceptor>
+	    	
+	    	<interceptor name="clientLoginInterceptor" class="clientLoginInterceptor">
+	    		<param name="includeMethods">
+	    			queryUserOrder, queryUserOrderDetail, addToCart,gotoMyBuyCart,indexEvaluate,clientQuery
+	    		</param>
+	    	</interceptor>
+	    	
+	    	<interceptor-stack name="loginStack">
+				<!--	    	       必须受到继承默认的拦截器站-->
+	    	    <interceptor-ref name="defaultStack"></interceptor-ref>
+	    		<interceptor-ref name="loginInterceptor"></interceptor-ref>
+	    		<interceptor-ref name="clientLoginInterceptor"></interceptor-ref>
+	    	</interceptor-stack>
+	  	</interceptors>
+	  	
+	  	<!-- 拦截到未登录跳到登录页面 -->
+		<global-results>
+			<result name="adminNotLogin">/admin/pleaseLogin.jsp</result>
+			<result name="clientNotLogin">/view/pleaseLogin.jsp</result>
+		</global-results>
+	</package>
+	
+	
+
+	<package name="login" namespace="" extends="base">
+		<action name="*_LoginAction" class="loginAction"  method="{1}">	
+		   <result type="json" name="isOkCode">
+				<param name="root">isEqual</param>
+			</result>
+			
+			<result name="adminLoginSuccess" type="redirect">/admin/index.jsp</result>
+			<result name="adminLoginFailure">/admin/login.jsp</result>
+			<result name="adminLogout">/admin/login.jsp</result>
+			
+			<result name="loginSuccess" type="chain">index_UIAction</result>
+			<result name="loginFailure">/login.jsp</result>
+			<result name="logout" type="chain">index_UIAction</result>
+		</action>
+	</package>
+	
+	
+	<package name="UI" namespace="" extends="base">
+		
+		<!-- UI界面Action -->
+		<action name="*_UIAction" class="UIAction" method="{1}">
+			<!--  拦截器引入  -->
+			<interceptor-ref name="defaultStack"/>  
+            <interceptor-ref name="loginInterceptor"/>  
+            <interceptor-ref name="clientLoginInterceptor"/> 
+            
+            
+			<result name="loginIndex">/admin/login.jsp</result>
+			<result name="addUser">/admin/user/addUser.jsp</result>
+			<result name="deleteUser">/admin/user/deleteUser.jsp</result>
+			
+			<result name="addAuthor">/admin/author/addAuthor.jsp</result>
+			<result name="deleteAuthor">/admin/author/deleteAuthor.jsp</result>
+			
+			<result name="addBook">/admin/book/addBook.jsp</result>
+			<result name="deleteBook">/admin/book/deleteBook.jsp</result>
+			<result name="adminSearchBook">/admin/book/searchBook.jsp</result>
+			
+			<!-- 客户端 -->
+			<result name="index">/view/index.jsp</result>
+			<result name="getAllCategory">/view/category/category.jsp</result>
+			<result name="login">/login.jsp</result>
+			<result name="gotoMyBuyCart">/view/cart/myBuyCart.jsp</result>
+			<result name="gotoPayment">/view/cart/payment.jsp</result>
+			<result name="retrievePassword">/view/retrieveResult.jsp</result>
+			<result name="changePassword">/view/changePassword.jsp</result>
+		</action>
+	</package>
+	
+	
+	<package name="biz" namespace="" extends="base">
+	  
+	   <!-- 书籍Action -->
+		<action name="*_BookAction" class="bookAction" method="{1}">
+			<!--  拦截器引入  -->
+			<interceptor-ref name="defaultStack"/>  
+            <interceptor-ref name="loginInterceptor"/>
+              
+			<result type="json" name="getSubCategory">
+				<param name="root">
+					chCategory
+				</param>
+			</result>
+			<result type="json" name="isExistISBN">
+				<param name="root">
+					isExitIsbn
+				</param>
+			</result>
+			<result name="addSuccess" type="chain">addBook_UIAction</result>
+			<result name="delete" type="chain">query_BookAction</result>
+			<result name="query">/admin/book/showBook.jsp</result>
+			<result name="queryById">/admin/book/updateBook.jsp</result>
+			<result name="update">/admin/book/updateBook.jsp</result>
+			<result name="queryBookDetail">/admin/book/bookDetail.jsp</result>
+			<result name="updateQuery">/admin/book/searchBook.jsp</result>
+			
+			
+			<result name="clientQueryById">/view/book/bookDetail.jsp</result>
+			<result name="newBooks">/view/book/newBook.jsp</result>
+			<result name="hotBooks">/view/book/hotBook.jsp</result>
+			<result name="lowBooks">/view/book/lowBook.jsp</result>
+			<result name="highBooks">/view/book/highBook.jsp</result>
+			<result name="usedBooks">/view/book/usedBook.jsp</result>
+			<result name="advSearch">/view/book/advSearchBooks.jsp</result>
+			<result name="search">/view/book/searchBooks.jsp</result>
+			<result name="queryByCategory">/view/book/categoryBook.jsp</result>
+		</action>
+		
+		<!-- 用户Action -->
+		<action name="*_UserAction" class="userAction" method="{1}">
+			<!--  拦截器引入  -->
+			<interceptor-ref name="defaultStack"/>  
+            <interceptor-ref name="loginInterceptor"/>
+            
+			<result type="json" name="queryCitys">
+				<param name="root">citys</param>
+			</result>
+			<result type="json" name="isExistUserName">
+				 <param name="root">isExistUser</param> 
+			</result>
+			<result name="addSuccess" type="chain">addUser_UIAction</result>
+			<result name="queryUsers">/admin/user/showUsers.jsp</result>
+			<result name="delete" type="chain">queryUsers_UserAction</result>
+			<result name="queryById">/admin/user/updateUser.jsp</result>
+			<result name="update">/admin/user/updateUser.jsp</result>
+			<result name="queryUserDetail">/admin/user/userDetail.jsp</result>
+			
+			
+			<result name="register" type="chain">index_UIAction</result>
+			<result name="findById">/view/user/userInfo.jsp</result>
+			<result name="viewUpdate" type="chain">index_UIAction</result>
+			<result name="toRegister">/register.jsp</result>
+		</action>
+		
+		<!-- 作者Action -->
+		<action name="*_AuthorAction" class="authorAction" method="{1}">
+			<!--  拦截器引入  -->
+			<interceptor-ref name="defaultStack"/>  
+            <interceptor-ref name="loginInterceptor"/>
+            
+			<result type="json" name="queryAuthor">
+				<param name="root">
+					authorsIdAndNname
+				</param>
+			</result>
+			<result name="addSuccess" type="chain">addAuthor_UIAction</result>
+			<result name="queryAuthors">/admin/author/showAuthor.jsp</result>
+			<result name="delete" type="chain">query_AuthorAction</result>
+			<result name="queryById">/admin/author/updateAuthor.jsp</result>
+			<result name="update">/admin/author/updateAuthor.jsp</result>
+			<result name="queryAuthorDetail">/admin/author/authorDetail.jsp</result>
+		</action>
+		
+		<!-- 日志Action -->
+		<action name="*_LogAction" class="logAction" method="{1}">
+			<!--  拦截器引入  -->
+			<interceptor-ref name="defaultStack"/>  
+            <interceptor-ref name="loginInterceptor"/>
+            
+			<result name="query">/admin/log/showLog.jsp</result>
+		</action>
+		
+		<!-- 订单细节Action -->
+		<action name="*_OrderDetailAction" class="orderDetailAction" method="{1}">
+			<!--  拦截器引入  -->
+			<interceptor-ref name="defaultStack"/>  
+            <interceptor-ref name="loginInterceptor"/>
+            <interceptor-ref name="clientLoginInterceptor"/> 
+            
+			<result name="query">/admin/orderDetail/showOrderDetail.jsp</result>
+			
+			<result name="queryUserOrderDetail">/view/order/myHBook.jsp</result>
+		</action>
+		
+		<!-- 订单Action -->
+		<action name="*_OrderAction" class="orderAction" method="{1}">
+			<!--  拦截器引入  -->
+			<interceptor-ref name="defaultStack"/>  
+            <interceptor-ref name="loginInterceptor"/> 
+             <interceptor-ref name="clientLoginInterceptor"/> 
+            
+			<result name="query">/admin/order/showOrder.jsp</result>
+			
+			<result name="clientQuery">/view/order/orderInfo.jsp</result>
+		</action>
+		
+		<!-- 购物车Action -->
+		<action name="*_CartAction" class="cartAction" method="{1}">
+			<!--  拦截器引入  -->
+			<interceptor-ref name="defaultStack"/>  
+            <interceptor-ref name="clientLoginInterceptor"/> 
+            
+			<result name="addToCart">/view/cart/myBuyCart.jsp</result>
+			<result name="delete">/view/cart/myBuyCart.jsp</result>
+		</action>
+		
+		<!-- 支付Action -->
+		<action name="*_PaymentAction" class="paymentAction" method="{1}">
+			<result name="paymentRequest">/view/cart/connection.jsp</result>
+			<result name="gotoPayment">/view/cart/payment.jsp</result>
+			<result name="payment">/view/cart/paymentResult.jsp</result>
+		</action>
+		
+		<!-- 书籍评价Action -->
+		<action name="*_EvaluateAction" class="evaluateAction" method="{1}">
+			<!--  拦截器引入  -->
+			<interceptor-ref name="defaultStack"/>  
+            <interceptor-ref name="clientLoginInterceptor"/> 
+            
+			<result name="indexEvaluate">/view/book/evaluateBook.jsp</result>
+			<result name="evaluate" type="chain">indexEvaluate_EvaluateAction</result>
+		</action>
+	</package>
+	
+</struts>    

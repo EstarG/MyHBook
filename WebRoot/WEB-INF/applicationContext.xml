@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p"	
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-2.5.xsd
+           http://www.springframework.org/schema/tx 
+           http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+           http://www.springframework.org/schema/aop 
+           http://www.springframework.org/schema/aop/spring-aop-2.5.xsd" 
+           >
+	
+	<!-- 打开aop -->
+	<aop:aspectj-autoproxy> </aop:aspectj-autoproxy>
+   
+    <context:annotation-config/>
+    <context:component-scan base-package="cn.hbook"></context:component-scan>
+    
+	<!-- 配置数据源 -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="configLocation"
+			value="classpath:hibernate.cfg.xml">
+		</property>
+	</bean>
+	
+    <!-- Spring的事务管理  -->
+	<bean id="txManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<tx:annotation-driven transaction-manager="txManager" />
+	
+	<!-- 工具  -->
+	<bean id="syscodeUtils" class="cn.hbook.utils.SyscodeUtils">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<bean id="tokenProcessor" class="cn.hbook.utils.TokenProcessor"></bean>
+	
+
+    <!--  配置DAO层Bean   -->
+    <bean id="userDao" class="cn.hbook.dao.impl.UserDaoImpl">
+    	<property name="sessionFactory" ref="sessionFactory"></property>
+    </bean>
+    
+    <bean id="bookDao" class="cn.hbook.dao.impl.BookDaoImpl">
+    	<property name="sessionFactory" ref="sessionFactory"></property>
+    </bean>
+    <bean id="logDao" class="cn.hbook.dao.impl.LogDaoImpl">
+    	<property name="sessionFactory" ref="sessionFactory"></property>
+    </bean>
+    
+    <bean id="authorDao" class="cn.hbook.dao.impl.AuthorDaoImpl">
+    	<property name="sessionFactory" ref="sessionFactory"></property>
+    </bean>
+    <bean id="orderDetailDao" class="cn.hbook.dao.impl.OrderDetailDaoImpl">
+    	<property name="sessionFactory" ref="sessionFactory"></property>
+    </bean>
+    
+    <bean id="orderDao" class="cn.hbook.dao.impl.OrderDaoImpl">
+    	<property name="sessionFactory" ref="sessionFactory"></property>
+    </bean>
+    
+    <bean id="evaluateDao" class="cn.hbook.dao.impl.EvaluateDaoImpl"></bean>
+    
+    
+    <!--  配置Service层Bean  -->
+    <bean id="userService" class="cn.hbook.service.impl.UserServiceImpl">
+    	<property name="userDao" ref="userDao"></property>
+    </bean>
+    
+    <bean id="bookService" class="cn.hbook.service.impl.BookServiceImpl">
+    	<property name="bookDao" ref="bookDao"></property>
+    </bean>
+    <bean id="logService" class="cn.hbook.service.impl.LogServiceImpl">
+    	<property name="logDao" ref="logDao"></property>
+    </bean>
+    
+    <bean id="authorService" class="cn.hbook.service.impl.AuthorServiceImpl">
+    	<property name="authorDao" ref="authorDao"></property>
+    </bean>
+    <bean id="orderDetailService" class="cn.hbook.service.impl.OrderDetailServiceImpl">
+    	<property name="orderDetailDao" ref="orderDetailDao"></property>
+    </bean>
+    
+    <bean id="orderService" class="cn.hbook.service.impl.OrderServiceImpl">
+    	<property name="orderDao" ref="orderDao"></property>
+    </bean>
+    
+    <bean id="recommenderService" class="cn.hbook.service.impl.RecommenderServiceImpl">
+    	<property name="bookDao" ref="bookDao"></property>
+    </bean>
+    
+    <bean id="evaluateService" class="cn.hbook.service.impl.EvaluateServiceImpl">
+    	<property name="evaluateDao" ref="evaluateDao"></property>	
+    	<property name="bookDao" ref="bookDao"></property>
+    </bean>
+
+    <!--  配置Action层bean  -->
+    <bean id="loginAction" class="cn.hbook.web.LoginAction" scope="prototype">
+    	<property name="userService" ref="userService"></property>
+    </bean>
+    <!-- 配置热门书店 开始-->
+    <bean id="bookstore1" class="cn.hbook.vo.BookStore">
+    	<property name="name" value="文轩网书店" />
+    	<property name="url" value="http://www.winxuan.com/" />
+    	<property name="picture" value="images/wenxuan.jpg" />
+    </bean>
+    <bean id="bookstore2" class="cn.hbook.vo.BookStore">
+    	<property name="name" value="博库书城" />
+    	<property name="url" value="http://shanghai.zxhsd.com/" />
+    	<property name="picture" value="images/boku.jpg" />
+    </bean>
+    <bean id="bookstore3" class="cn.hbook.vo.BookStore">
+    	<property name="name" value="南京先锋书店" />
+    	<property name="url" value="http://shanghai.zxhsd.com/" />
+    </bean>
+    <bean id="bookstore4" class="cn.hbook.vo.BookStore">
+    	<property name="name" value="席殊书屋" />
+    	<property name="url" value="http://shanghai.zxhsd.com/" />
+    </bean>
+    <bean id="bookstore5" class="cn.hbook.vo.BookStore">
+    	<property name="name" value="三联书店" />
+    	<property name="url" value="http://shanghai.zxhsd.com/" />
+    </bean>
+    <bean id="bookstore6" class="cn.hbook.vo.BookStore">
+    	<property name="name" value="重庆精典书店" />
+    	<property name="url" value="http://shanghai.zxhsd.com/" />
+    </bean>
+    <bean id="bookstore7" class="cn.hbook.vo.BookStore">
+    	<property name="name" value="灵感库图书" />
+    	<property name="url" value="http://shanghai.zxhsd.com/" />
+    </bean>
+    <bean id="bookstore8" class="cn.hbook.vo.BookStore">
+    	<property name="name" value="哈尔滨市精华书店" />
+    	<property name="url" value="http://shanghai.zxhsd.com/" />
+    </bean>
+    <bean id="bookstore9" class="cn.hbook.vo.BookStore">
+    	<property name="name" value="北京万圣书园" />
+    	<property name="url" value="http://shanghai.zxhsd.com/" />
+    </bean>
+    <bean id="bookstore10" class="cn.hbook.vo.BookStore">
+    	<property name="name" value="新华书店" />
+    	<property name="url" value="http://shanghai.zxhsd.com/" />
+    </bean>
+     <bean id="bookstore11" class="cn.hbook.vo.BookStore">
+     	<property name="name" value="山东理工书店" />
+    	<property name="url" value="http://sdut.edu.cn/" />
+    </bean>
+    
+    <bean id="UIAction" class="cn.hbook.web.UIAction">
+    	<property name="bookService" ref="bookService"></property>
+    	<property name="syscodeUtils" ref="syscodeUtils"></property>
+    	<property name="recommenderService" ref="recommenderService"></property>
+    	<property name="userService" ref="userService"></property>
+    	
+    	<!-- 可配置的添加外部信息  -->
+    	
+    	<!-- 今日特价 -->
+    	<property name="specialbookId" value="142"></property>
+    	
+    	<!-- 左侧广告配置 -->
+    	<property name="advertisement">
+    		<map>
+    			<entry key="http://www.taobao.com" value="images/taobao.jpg"></entry>
+    			<entry key="http://www.jd.com" value="images/jd.png"></entry>
+    			<entry key="http://www.tmall.com" value="images/tmall.jpg"></entry>
+    			<entry key="http://jwch.sdut.edu.cn/" value="images/sdut.jpg"></entry>
+    		</map>
+    	</property>
+    	
+    	<!-- 热门标签 -->
+    	<property name="hotTags">
+    		<map>
+    			<entry key="1" value="文学"></entry>
+    			<entry key="68" value="散文/随笔/书信"></entry>
+    			<entry key="44" value="中国当代小说"></entry>
+    			<entry key="45" value="军事"></entry>
+    			<entry key="69" value="歌词曲"></entry>
+    			<entry key="46" value="中国古典小说"></entry>
+    			<entry key="47" value="四大名著"></entry>
+    			<entry key="71" value="外国文学"></entry>
+    		</map>
+    	</property>
+    	
+    	<!-- 图书咨询 -->
+    	<property name="bookInformation">
+    		<map>
+    			<entry key="76" value="以下是可通过外部进行配置的"></entry>
+    			<entry key="75" value="汇书备考季 ，低价抢购！"></entry>
+    			<entry key="74" value="童书全场满59加1元得畅销书"></entry>
+    			<entry key="73" value="社科、生活、科技满80赠书"></entry>
+    			<entry key="72" value="买书送花肥,美好生活从花开始"></entry>
+    			<entry key="71" value="参加活动赢《归来》电影票！"></entry>
+    		</map>
+    	</property>
+    	
+    	<!-- 经典套装 -->
+    	<property name="bookSuitIds">
+    		<list>
+    			<value>149</value>
+    			<value>72</value>
+    			<value>73</value>
+    			<value>70</value>
+    			<value>79</value>
+    		</list>
+    	</property>
+    	
+    	<!-- 儿童馆 -->
+    	<property name="childrenBooksIds">
+    		<list>
+    			<value>76</value>
+    			<value>74</value>
+    			<value>73</value>
+    			<value>72</value>
+    			<value>71</value>
+    			
+    			<value>75</value>
+    			<value>77</value>
+    			<value>78</value>
+    			<value>79</value>
+    			<value>80</value>
+    		</list>
+    	</property>
+    	
+    	<!-- 考试专区 -->
+    	<property name="examBooksIds">
+    		<list>
+    			<value>78</value>
+    			<value>74</value>
+    			<value>73</value>
+    			<value>72</value>
+    			<value>71</value>
+    			
+    			<value>76</value>
+    			<value>77</value>
+    			<value>75</value>
+    			<value>79</value>
+    			<value>80</value>
+    		</list>
+    	</property>
+    	
+    	<!-- 热门搜索 -->
+    	<property name="hotSearch">
+    		<map>
+    			<entry key="147" value="天才在左，疯子在右"></entry>
+    			<entry key="148" value="钢铁是怎样炼成的"></entry>
+    			<entry key="149" value="四大名著"></entry>
+    			<entry key="129" value="陆犯焉识"></entry>
+    		</map>
+    	</property>
+    	
+    	<!-- 导航下的快捷键 -->
+    	<property name="shortKey">
+    		<map>
+    			<entry key="74" value="家居"></entry>
+    			<entry key="73" value="娱乐"></entry>
+    			<entry key="2" value="小说"></entry>
+    			<entry key="7" value="励志成功"></entry>
+    			<entry key="1" value="文学"></entry>
+    		</map>
+    	</property>
+    	
+    	<!-- 考试专区 -->
+    	<property name="slideAdv">
+    		<list>
+    			<value>images/slider1.jpg</value>
+    			<value>images/slider2.jpg</value>
+    			<value>images/slider3.jpg</value>
+    			<value>images/slider4.jpg</value>
+    			<value>images/slider5.jpg</value>
+    		</list>
+    	</property>
+    	
+    	<!-- 热门书店 -->
+    	<property name="hotBookStores">
+    		<list>
+    			<ref bean="bookstore1"/>
+    			<ref bean="bookstore2"/>
+    			<ref bean="bookstore3"/>
+    			<ref bean="bookstore4"/>
+    			<ref bean="bookstore5"/>
+    			<ref bean="bookstore6"/>
+    			<ref bean="bookstore7"/>
+    			<ref bean="bookstore8"/>
+    			<ref bean="bookstore9"/>
+    			<ref bean="bookstore10"/>
+    			<ref bean="bookstore11"/>
+    		</list>
+    	</property>
+    	
+    </bean>
+    
+    <bean id="userAction" class="cn.hbook.web.UserAction" scope="prototype">
+      <property name="userService" ref="userService"></property>
+      <property name="sysutil" ref="syscodeUtils"></property>
+    </bean>
+    
+    <bean id="logAction" class="cn.hbook.web.LogAction" scope="prototype">
+    	<property name="logService" ref="logService"></property>
+    </bean>
+    
+    <bean id="orderDetailAction" class="cn.hbook.web.OrderDetailAction" scope="prototype">
+    	<property name="orderDetailService" ref="orderDetailService"></property>
+    </bean>
+    
+    <bean id="authorAction" class="cn.hbook.web.AuthorAction" scope="prototype">
+    	<property name="authorService" ref="authorService"></property>
+    </bean>
+    
+    <bean id="orderAction" class="cn.hbook.web.OrderAction">
+    	<property name="orderService" ref="orderService"></property>
+    </bean>
+    
+    <bean id="bookAction" class="cn.hbook.web.BookAction" scope="prototype">
+    	<property name="bookService" ref="bookService"></property>
+    	<property name="authorService" ref="authorService"></property>
+    	<property name="sysutil" ref="syscodeUtils"></property>
+    	<property name="tokenProcessor" ref="tokenProcessor"></property>
+    	<!-- 可配置的添加外部广告  -->
+    	<property name="specialbookId" value="142"></property>
+    	<!-- 左侧广告配置 -->
+    	<property name="advertisement">
+    		<map>
+    			<entry key="http://www.taobao.com" value="images/taobao.jpg"></entry>
+    			<entry key="http://www.jd.com" value="images/jd.png"></entry>
+    			<entry key="http://www.tmall.com" value="images/tmall.jpg"></entry>
+    			<entry key="http://jwch.sdut.edu.cn/" value="images/sdut.jpg"></entry>
+    		</map>
+    	</property>
+    </bean>
+    
+    <bean id="cartAction" class="cn.hbook.web.CartAction" scope="prototype">
+    	<property name="orderService" ref="orderService"></property>
+    	<property name="bookService" ref="bookService"></property>
+    </bean>
+    
+    <bean id="paymentAction" class="cn.hbook.web.PaymentAction">
+    	<property name="orderService" ref="orderService"></property>
+    	<property name="detailService" ref="orderDetailService"></property>
+    </bean>
+    
+    <bean id="evaluateAction" class="cn.hbook.web.EvaluateAction">
+    	<property name="bookService" ref="bookService"></property>
+    	<property name="evaluateService" ref="evaluateService"></property>
+    </bean>
+    
+    
+    
+    	
+    <!-- interceptor配置 -->
+    <bean id="loginInterceptor" class="cn.hbook.interceptor.loginInterceptor"></bean>
+    <bean id="clientLoginInterceptor" class="cn.hbook.interceptor.ClientLoginInterceptor"></bean>
+
+</beans>

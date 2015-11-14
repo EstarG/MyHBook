@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="MyHBook"
+  id="myeclipse.1393392372140"
+  context-root="/MyHBook"
+  j2ee-spec="5.0"
+  archive="MyHBook.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+

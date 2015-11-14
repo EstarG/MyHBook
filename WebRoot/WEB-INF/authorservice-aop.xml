@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-2.5.xsd
+           http://www.springframework.org/schema/tx 
+           http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+           http://www.springframework.org/schema/aop 
+           http://www.springframework.org/schema/aop/spring-aop-2.5.xsd" 
+           >
+    <bean id="authorAop" class="cn.hbook.aop.AuthorAop"> 
+    	<property name="logService" ref="logService"></property>
+    </bean>
+    
+   <!--  关于书籍添加， 更新的后置通知记录日志 -->
+    <aop:config>
+    	<aop:aspect id = "logAuthor1" ref="authorAop">
+			<aop:pointcut expression="execution(* cn.hbook.service.IAuthorService.save(..))" id="saveAuthor"/>
+			<aop:after method="afterSave" pointcut-ref="saveAuthor"/>
+		</aop:aspect>
+		<aop:aspect id = "logAuthor2" ref="authorAop">
+			<aop:pointcut expression="execution(* cn.hbook.service.IAuthorService.update(..))" id="updateAuthor"/>
+			<aop:after method="afterUpdate" pointcut-ref="updateAuthor"/>
+		</aop:aspect>
+		
+    </aop:config>
+
+</beans>

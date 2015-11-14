@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-2.5.xsd
+           http://www.springframework.org/schema/tx 
+           http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+           http://www.springframework.org/schema/aop 
+           http://www.springframework.org/schema/aop/spring-aop-2.5.xsd" 
+           >
+    <bean id="userAop" class="cn.hbook.aop.UserAop"> 
+    	<property name="logService" ref="logService"></property>
+    </bean>
+    
+   <!--  关于用户的添加， 更新，删除的后置通知记录日志 -->
+    <aop:config>
+    	<aop:aspect id = "logUser1" ref="userAop">
+			<aop:pointcut expression="execution(* cn.hbook.service.IUserService.save(..))" id="saveUser"/>
+			<aop:after method="afterSave" pointcut-ref="saveUser"/>
+		</aop:aspect>
+		<aop:aspect id = "logUser2" ref="userAop">
+			<aop:pointcut expression="execution(* cn.hbook.service.IUserService.update(..))" id="updateUser"/>
+			<aop:after method="afterUpdate" pointcut-ref="updateUser"/>
+		</aop:aspect>
+		<aop:aspect id="logUser3" ref="userAop">
+			<aop:pointcut expression="execution(* cn.hbook.service.IUserService.delete(..))" id="deleteUser"/>
+			<aop:before method="beforeDalete" pointcut-ref="deleteUser"/>
+		</aop:aspect>
+    </aop:config>
+
+</beans>

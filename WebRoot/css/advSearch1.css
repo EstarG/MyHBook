@@ -1,0 +1,16 @@
+#advance .mt{padding-left:100px;border-bottom:1px solid #FFCC67;}
+#advance .mt h2{position:relative;float:left;height:25px;padding-left:28px;margin:5px 53px 0 0;line-height:24px;}
+#advance .mt h2 b{position:absolute;top:0;left:0;width:22px;height:22px;background:url(i/bg_advance.jpg) no-repeat -104px -34px;}
+#advance .mt .tab{float:left;}
+#advance .mt .tab li{width:104px;height:30px;margin-right:6px;background-image:url(i/bg_advance.jpg);background-color:#FFCC67;background-repeat:no-repeat;background-position:0 -65px;line-height:30px;font-size:14px;font-weight:bold;color:#CD9A65;}
+#advance .mt .tab .curr{background-position:0 -34px;color:#fff;}
+#advance .mc{padding:20px 0;}
+#advance .item{padding:5px 0;overflow:hidden;zoom:1;}
+#advance .text{height:16px;padding:4px 3px;border:1px solid #bbb;font-size:14px;font-family:arial,"ËÎÌו";}
+#advance .text1{width:240px;}
+#advance .text2{width:60px;}
+#advance .label{line-height:22px;}
+#advance .label1{width:300px;text-align:right;}
+#advance .label2{padding:0 5px;}
+#advance .btns{padding:20px 0 0 300px;overflow:hidden;zoom:1;}
+#advance .btn-search{width:126px;height:32px;background:url(i/bg_advance.jpg) #FFCC67 no-repeat 0 0;border:none;font-size:14px;font-weight:bold;color:#fff;cursor:pointer;}
